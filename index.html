@@ -141,6 +141,21 @@
     #abstract-form, #abstract-view {
         display: none;
     }
+    /* nav fix */
+    .nav-tabs>li {
+        height:62px;
+    }
+    .nav-tabs>li>a, .nav-tabs>li>a>div {
+        height:100%;
+        display:table;
+    }
+    .nav-tabs>li>a span {
+        display:table-cell;
+        vertical-align:middle;
+    }
+    li[role="presentation"] a {
+        width: 100%;
+    }
   </style>
   </head>
   <body>
@@ -156,9 +171,10 @@
         <div class="row">
 
                 <!-- Nav tabs -->
-                <ul class="nav nav-tabs form-signin no-padding" role="tablist" style="padding-bottom:0px;">
+                <ul class="nav nav-tabs form-signin no-padding nav-justified" role="tablist" style="padding-bottom:0px;">
                     <li role="presentation" class="active"><a href="#register" aria-controls="home" role="tab" data-toggle="tab"><h4>Register</h4></a></li>
                     <li role="presentation"><a href="#signin" aria-controls="signin" role="tab" data-toggle="tab"><h4>Sign in</h4></a></li>
+                    <li role="presentation"><a href="#reset" aria-controls="reset" role="tab" data-toggle="tab"><h4>Password reset</h4></a></li>
                 </ul>
 
                 <!-- Tab panes -->
@@ -187,6 +203,14 @@
                         </form>
                     </div>
 
+                    <div role="tabpanel" class="tab-pane" id="reset">
+                        <form id="signInForm" class="form-signin" name="reset">
+                            <label for="inputEmail" class="sr-only">Email address</label>
+                            <input type="email" id="inputEmailReset" name="inputEmailReset" class="form-control" placeholder="Email address" required autofocus>
+                            <button id="resetBtn" class="btn btn-lg btn-primary btn-block" type="submit">Request change</button>
+                        </form>
+                    </div>
+
             </div>
         </div>
     </div>
@@ -199,12 +223,13 @@
         <div class="row">
             <div class="no-padding col-md-10 col-md-offset-1 col-xs-10 col-xs-offset-1 col-sm-10 col-sm-offset-1 col-lg-8 col-lg-offset-2">
                 <!-- Nav tabs -->
-                <ul id="signed-tab" class="nav nav-tabs" role="tablist" style="padding-bottom:0px; margin: 0 auto 0 0;">
+                <ul id="signed-tab" class="nav nav-tabs nav-justified" role="tablist" style="padding-bottom:0px; margin: 0 auto 0 0;">
                     <li role="presentation" class="active"><a href="#info" aria-controls="info" role="tab" data-toggle="tab"><h4>General Info</h4></a></li>
                     <li role="presentation"><a href="#data" aria-controls="data" role="tab" data-toggle="tab"><h4>Data</h4></a></li>
                     <li role="presentation" id="abstractTab"><a href="#abstract" aria-controls="abstract" role="tab" data-toggle="tab"><h4>Abstract</h4></a></li>
                     <li role="presentation"><a href="#payment" aria-controls="payment" role="tab" data-toggle="tab"><h4>Payment</h4></a></li>
-                    <button id="logOutBtn" class="btn btn-danger pull-right" style="margin-top: 12px">Log Out</button>
+                    <li role="presentation" id="logOutTab"><a href="#" aria-controls="logout" role="tab" data-toggle="tab"><h4>Log out</h4></a></li>
+                    <!--<button id="logOutBtn" class="btn btn-danger pull-right" style="margin-top: 12px">Log Out</button>-->
                 </ul>  
             </div>
         </div>
@@ -428,8 +453,22 @@
             });
         });
 
+        $('#resetBtn').click(function(){
+            var email = $('#inputEmailReset').val();
+            firebase.auth().sendPasswordResetEmail(email).then(function() {
+                alert("Password reset email sent.");
+            }, function(error) {
+                alert(error);
+            });
+        });
+
         $('#logOutBtn').click(function(){
             firebase.auth().signOut();
+        });
+
+        $('#logOutTab').click(function(){
+            if (confirm("You are about to log out."))
+                firebase.auth().signOut();
         });
 
         firebase.auth().onAuthStateChanged(function(user) {
