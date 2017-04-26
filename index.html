@@ -485,7 +485,7 @@
                 });
 
                 firebase.database().ref('abstracts/' + user.uid).on('value', function(snapshot) {
-                    if(snapshot.val() !== null)
+                    // if(snapshot.val() !== null)
                         updateAbstractFields(snapshot.val());
                 });
 
@@ -568,35 +568,40 @@
 
         function updateAbstractFields(snapshot){
 
-            var emptyFieldCount = 0;
-            for(var teste in snapshot) {
-                emptyFieldCount += $.trim(snapshot[teste]) === "";
-            }
+            if(snapshot != null){
+                var emptyFieldCount = 0;
+                for(var teste in snapshot) {
+                    emptyFieldCount += $.trim(snapshot[teste]) === "";
+                }
 
-            if(emptyFieldCount > 0){
+                if(emptyFieldCount > 0){
+                    //abstract-form
+                    $('#abstract-view').hide();
+                    $('#abstract-form').show();
+                } else {
+                    //abstract-view
+                    $('#abstract-form').hide();
+                    $('#abstract-view').show();
+                }
+
+                //abstract-form
+                $('#abstract-form #inputTitle').val(snapshot.title);
+                $('#abstract-form #inputAuthors').val(snapshot.authors);
+                $('#abstract-form #inputInstitutions').val(snapshot.institutions);
+                $('#abstract-form #inputKeywords').val(snapshot.keywords);
+                $('#abstract-form #inputText').val(snapshot.text);
+
+                //abstract-view
+                $('#abstract-view #title').text(snapshot.title);
+                $('#abstract-view #authors').text(snapshot.authors);
+                $('#abstract-view #institutions').text(snapshot.institutions);
+                $('#abstract-view #text').text(snapshot.text);
+                $('#abstract-view #keywords').text('Keywords: '+snapshot.keywords);
+            } else {
                 //abstract-form
                 $('#abstract-view').hide();
                 $('#abstract-form').show();
-            } else {
-                //abstract-view
-                $('#abstract-form').hide();
-                $('#abstract-view').show();
             }
-
-            console.log(emptyFieldCount);
-            //abstract-form
-            $('#abstract-form #inputTitle').val(snapshot.title);
-            $('#abstract-form #inputAuthors').val(snapshot.authors);
-            $('#abstract-form #inputInstitutions').val(snapshot.institutions);
-            $('#abstract-form #inputKeywords').val(snapshot.keywords);
-            $('#abstract-form #inputText').val(snapshot.text);
-
-            //abstract-view
-            $('#abstract-view #title').text(snapshot.title);
-            $('#abstract-view #authors').text(snapshot.authors);
-            $('#abstract-view #institutions').text(snapshot.institutions);
-            $('#abstract-view #text').text(snapshot.text);
-            $('#abstract-view #keywords').text('Keywords: '+snapshot.keywords);
         }
 
         function successAlert() {
