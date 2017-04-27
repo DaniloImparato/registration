@@ -156,6 +156,13 @@
     li[role="presentation"] a {
         width: 100%;
     }
+    table {
+        width: 100%;
+        text-align: center;
+    }
+    #payment td {
+        vertical-align: middle;
+    }
   </style>
   </head>
   <body>
@@ -351,16 +358,38 @@
 
                     <!-- tab pane 4 -->
                     <div role="tabpanel" class="tab-pane" id="payment">
-                        <p>Click on the following image to be redirected to PagSeguro's payment page. Payment status will be updated once we're notified.</p>
-                        <form id="psForm" action="https://pagseguro.uol.com.br/checkout/v2/payment.html" method="post">
-                            <p id="description"></p>
-                            <span>Registration fee: R$</span>
-                            <span id="fee"></span>
-                            <br/>
-                            <input type="hidden" name="code" id="productId" value="" />
-                            <input type="hidden" name="iot" value="button" />
-                            <input type="image" src="https://stc.pagseguro.uol.com.br/public/img/botoes/pagamentos/209x48-comprar-preto-assina.gif" name="submit" alt="Pague com PagSeguro - é rápido, grátis e seguro!" />
-                        </form>
+                        <p>Payment status will be updated once we're notified.</p>
+                        <table class="table table-bordered">
+                            <tr>
+                                <td>
+                                    <b>
+                                    For brazilian participants
+                                    </b>
+                                </td>
+                                <td>
+                                    <form id="psForm" action="https://pagseguro.uol.com.br/checkout/v2/payment.html" method="post">
+                                        <p id="description"></p>
+                                        <span>Registration fee: R$</span>
+                                        <span id="fee"></span>
+                                        <br/>
+                                        <input type="hidden" name="code" id="productId" value="" />
+                                        <input type="hidden" name="iot" value="button" />
+                                        <input type="image" src="https://stc.pagseguro.uol.com.br/public/img/botoes/pagamentos/209x48-comprar-preto-assina.gif" name="submit" alt="Pague com PagSeguro - é rápido, grátis e seguro!" />
+                                    </form>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <b>
+                                        For foreign participants
+                                    </b>
+                                </td>
+                                <td>
+                                    <a class="btn btn-primary" href="https://sec.sbfisica.org.br/eventos/extras/sbss/sys/" role="button" target="_blank">Register for payment</a>
+                                    <a class="btn btn-primary" href="https://sec.sbfisica.org.br/eventos/extras/sbss/sys/index1.asp" role="button" target="_blank">Check registration</a>
+                                </td>
+                            </tr>
+                        </table>
                     </div>
 
                 </div>
