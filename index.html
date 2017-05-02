@@ -116,6 +116,7 @@
     #psForm {
         margin: 50px 0px 35px 0px;
         text-align: center;
+        display: none;
     }
     #psForm p, #psForm span {
         text-align: center; font-size: 1.25em;
@@ -376,6 +377,7 @@
                                         <input type="hidden" name="iot" value="button" />
                                         <input type="image" src="https://stc.pagseguro.uol.com.br/public/img/botoes/pagamentos/209x48-comprar-preto-assina.gif" name="submit" alt="Pague com PagSeguro - é rápido, grátis e seguro!" />
                                     </form>
+                                    <span id="enrollment-alert">Please submit your current enrollment.</span>
                                 </td>
                             </tr>
                             <tr>
@@ -566,6 +568,7 @@
         }
 
         function updateProfileFields(snapshot){
+            console.log('update',snapshot);
             //user profile
             $('#data-form #inputName').val(snapshot.name);
             $('#data-form #inputInstitution').val(snapshot.institution);
@@ -573,13 +576,21 @@
             $('#data-form #inputOral').prop('checked', snapshot.oral);
             $('#data-form #inputPoster').prop('checked', snapshot.poster);
 
-            $('#data-form #inputEnrollment option[value="' + snapshot.enrollment + '"]').prop('selected', true);
+            if(snapshot.enrollment != null){
+                $('#psForm').show();
+                $('#enrollment-alert').hide();
 
-            firebase.database().ref('info/enrollment/' + snapshot.enrollment).once('value').then(function(enrollmentSnapshot) {
-                $('#psForm #description').text(enrollmentSnapshot.val().title);
-                $('#psForm #fee').text(enrollmentSnapshot.val().price);
-                $('#psForm #productId').val(enrollmentSnapshot.val().productId);
-            });
+                $('#data-form #inputEnrollment option[value="' + snapshot.enrollment + '"]').prop('selected', true);
+
+                firebase.database().ref('info/enrollment/' + snapshot.enrollment).once('value').then(function(enrollmentSnapshot) {
+                    $('#psForm #description').text(enrollmentSnapshot.val().title);
+                    $('#psForm #fee').text(enrollmentSnapshot.val().price);
+                    $('#psForm #productId').val(enrollmentSnapshot.val().productId);
+                });
+            } else {
+                $('#psForm').hide();
+                $('#enrollment-alert').show();
+            }
 
         }
 
