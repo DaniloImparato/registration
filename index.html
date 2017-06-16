@@ -233,6 +233,7 @@
                 <!-- Nav tabs -->
                 <ul id="signed-tab" class="nav nav-tabs nav-justified" role="tablist" style="padding-bottom:0px; margin: 0 auto 0 0;">
                     <li role="presentation" class="active"><a href="#info" aria-controls="info" role="tab" data-toggle="tab"><h4>General Info</h4></a></li>
+                    <li role="presentation" id="certificateTab"><a href="#certificates" aria-controls="info" role="tab" data-toggle="tab"><h4>Certificates</h4></a></li>
                     <li role="presentation"><a href="#data" aria-controls="data" role="tab" data-toggle="tab"><h4>Data</h4></a></li>
                     <li role="presentation" id="abstractTab"><a href="#abstract" aria-controls="abstract" role="tab" data-toggle="tab"><h4>Abstract</h4></a></li>
                     <li role="presentation"><a href="#payment" aria-controls="payment" role="tab" data-toggle="tab"><h4>Payment</h4></a></li>
@@ -267,6 +268,13 @@
                         <p>Left to opt for poster presentation</p>
                         <hr>
                         <p id="db-info"></p>
+                    </div>
+                    
+                    <!-- tab pane certificates -->
+                    <div role="tabpanel" class="tab-pane" id="certificates">
+                        <a target="_blank" href="#" id="attendeeCertificate">Download attendee certificate</a>
+                        <br/>
+                        <a target="_blank" href="#" id="speakerCertificate" style="display:none;">Download speaker certificate</a>
                     </div>
 
                     <!-- tab pane 2 -->
@@ -506,6 +514,63 @@
             if (user) {
                 signIn(user);
 
+
+                // Create a reference to the file we want to download
+                var storage = firebase.storage();
+                var storageRef = storage.ref();
+
+                var attendee = storageRef.child('certificates/attendees/'+user.uid+'.pdf');
+
+                // Get the download URL
+                attendee.getDownloadURL().then(function(url) {
+                    // Insert url into an <img> tag to "download"
+                    displayCertificate(url);
+                }).catch(function(error) {
+                    switch (error.code) {
+                        case 'storage/object_not_found':
+                        // File doesn't exist
+                        break;
+
+                        case 'storage/unauthorized':
+                        // User doesn't have permission to access the object
+                        break;
+
+                        case 'storage/canceled':
+                        // User canceled the upload
+                        break;
+
+                        case 'storage/unknown':
+                        // Unknown error occurred, inspect the server response
+                        break;
+                    }
+                });
+
+                var speaker = storageRef.child('certificates/speakers/'+user.uid+'.pdf');
+
+                // Get the download URL
+                speaker.getDownloadURL().then(function(url) {
+                    // Insert url into an <img> tag to "download"
+                    displaySpeakerCertificate(url);
+                }).catch(function(error) {
+                    switch (error.code) {
+                        case 'storage/object_not_found':
+                        // File doesn't exist
+                        break;
+
+                        case 'storage/unauthorized':
+                        // User doesn't have permission to access the object
+                        break;
+
+                        case 'storage/canceled':
+                        // User canceled the upload
+                        break;
+
+                        case 'storage/unknown':
+                        // Unknown error occurred, inspect the server response
+                        break;
+                    }
+                });
+
                 firebase.database().ref('users/' + user.uid + '/profile').on('value', function(snapshot) {
                     if(snapshot.val() !== null)
                         updateProfileFields(snapshot.val());
@@ -592,6 +657,25 @@
                 $('#enrollment-alert').show();
             }
 
+        }
+
+        function displayCertificate(url){
+            $('li[role="presentation"]:not(#logOutTab)').hide();
+            $('#certificateTab').show();
+
+            $('[href="#certificates"]').tab('show');
+
+            $('#attendeeCertificate').attr('href',url)
+        }
+
+        function displaySpeakerCertificate(url){
+            $('li[role="presentation"]:not(#logOutTab)').hide();
+            $('#certificateTab').show();
+
+            $('[href="#certificates"]').tab('show');
+
+            $('#speakerCertificate').show();
+            $('#speakerCertificate').attr('href',url)
         }
 
         function updatePaymentAlert(snapshot){
